@@ -5,18 +5,17 @@ namespace App\Controller;
 use App\Entity\Visitor;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\BrowserKit\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-/**
- * @Route("/api",name="api_")
- */
+
+#[Route('/api',name:'api_')]
 class VisitorController extends AbstractController
 {
-    /**
-     * @Route("/visitor", name= "visitor_index",methods={"GET"})
-    */
-     public function index(ManagerRegistry $doctrine): Response
+    
+    #[Route('/visitors',name:'visitor_index',methods:['GET'])]
+     public function index(ManagerRegistry $doctrine): JsonResponse
     {
         $visitors=$doctrine
             ->getRepository(Visitor::class)
@@ -36,15 +35,14 @@ class VisitorController extends AbstractController
 
        return $this->json($data);
     }
-    /**
-     * @Route("/visitor", name="visitor_new", methods={"POST"})
-     */
-    public function new(ManagerRegistry $doctrine, Request $request):Response
+   
+    #[Route('/visitors',name:'visitor_create',methods:['POST'])]
+    public function create(ManagerRegistry $doctrine, Request $request):JsonResponse
     {
         $entityManager=$doctrine->getManager();
 
         $visitor=new Visitor();
-
+        // dump($request);
         $visitor->setNumero($request->request->get('numero'));
         $visitor->setNom($request->request->get('nom'));
         $visitor->setNbJours($request->request->get('nbJours'));
@@ -55,10 +53,9 @@ class VisitorController extends AbstractController
 
         return $this->json('Nouveau visiteur crée avec succès');
     }
-    /**
-     * @Route("/visitor/{id}",name="visitor_show",methods={"GET"})
-     */
-    public function show(ManagerRegistry $doctrine,int $id):Response
+    
+    #[Route('/visitors/{id}',name:'visitor_show',methods:['GET'])]
+    public function show(ManagerRegistry $doctrine,int $id):JsonResponse
     {
         $visitor=$doctrine->getRepository(Visitor::class)->find($id);
 
@@ -77,10 +74,9 @@ class VisitorController extends AbstractController
         return $this->json($data);
     }
 
-    /**
-     * @Route("/visitor/{id}", name="visitor_edit", methods={"PUT"})
-     */
-    public function edit(ManagerRegistry $doctrine, Request $request, int $id):Response
+  
+    #[Route('/visitors/{id}',name:'visitor_update',methods:['PUT','PATCH'])]
+    public function update(ManagerRegistry $doctrine, Request $request, int $id):JsonResponse
     {
         $entityManager=$doctrine->getManager();
         $visitor=$entityManager->getRepository(Visitor::class)->find($id);
@@ -90,7 +86,7 @@ class VisitorController extends AbstractController
         }
 
         $visitor->setNumero($request->request->get('numero'));
-        $visitor->setNom($request->request->get('noù'));
+        $visitor->setNom($request->request->get('nom'));
         $visitor->setNbJours($request->request->get('nbJours'));
         $visitor->setTarifJournalier($request->request->get('tarifJournalier'));
 
@@ -106,11 +102,9 @@ class VisitorController extends AbstractController
 
         return $this->json($data);
     }
-
-    /**
-     * @Route("visitor/{id}",name="visitor_delete", methods={"DELETE"})
-     */
-    public function delete(ManagerRegistry $doctrine, int $id):Response
+    
+    #[Route('/visitors/{id}',name:'visitor_delete',methods:['DELETE'])]
+    public function delete(ManagerRegistry $doctrine, int $id):JsonResponse
     {
         $entityManager=$doctrine->getManager();
         $visitor=$entityManager->getRepository(Visitor::class)->find($id);
