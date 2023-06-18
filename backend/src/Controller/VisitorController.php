@@ -42,7 +42,6 @@ class VisitorController extends AbstractController
         $entityManager=$doctrine->getManager();
 
         $visitor=new Visitor();
-        // dump($request);
         $visitor->setNumero($request->request->get('numero'));
         $visitor->setNom($request->request->get('nom'));
         $visitor->setNbJours($request->request->get('nbJours'));

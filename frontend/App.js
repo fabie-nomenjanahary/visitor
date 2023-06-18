@@ -9,7 +9,6 @@ import {
   Modal,
   TextInput
 } from "react-native";
-import axios from "axios";
 const App=()=>{
 
   const [list,setList]=useState([])
@@ -35,12 +34,10 @@ const App=()=>{
     }).then(res=>{
       return res.json()
     }).then(res=>{
-      console.log(res);
       if (res) {
         setList(res)
       }
     }).catch(err=>{
-      console.log(err);
     })
   }
 
@@ -70,48 +67,30 @@ const App=()=>{
        getVisitorsList();
        setModalVisitor(false)
        clearForm();
-       console.log(res);
       }).catch(err=>{
-        console.log(err);
       })
     } else {
-      // fetch("http://127.0.0.1:8000/api/visitors",{
-      //   method:"PUT",
-      //   headers:{
-      //     'Accept':'application/json',
-      //     'Content-Type':'application/json'
-      //   },
-      //   body:JSON.stringify({
-      //     "id":id,
-      //     "numero":numero,
-      //     "nom":nom,
-      //     "nbJours":parseInt(nbJours),
-      //     "tarifJournalier":parseFloat(tarifJournalier),
-      //   })
-      // })
-      axios.put("http://127.0.0.1:8000/api/visitors",
-          JSON.stringify({
+      fetch("http://127.0.0.1:8000/api/visitors/"+id,{
+        method:"PUT",
+        headers:{
+          'Accept':'application/json',
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
           "id":id,
           "numero":numero,
           "nom":nom,
           "nbJours":parseInt(nbJours),
           "tarifJournalier":parseFloat(tarifJournalier),
-        },
-        {
-              'Accept':'application/json',
-              'Content-Type':'application/json'
-            }
-        )
-      )
+        })
+      })
       .then(res=>{
         return res.json()
       }).then(res=>{
        getVisitorsList();
        setModalVisitor(false)
        clearForm();
-       console.log(res);
       }).catch(err=>{
-        console.log(err);
       })
     }
   
@@ -132,9 +111,8 @@ const App=()=>{
     setTarifJournalier(item.tarifJournalier);
     setModalVisitor(true)
   }
-/*TODO:405 method not allowed*/
   const handleRemove=(item)=>{
-    fetch("http://127.0.0.1:8000/api/visitors",{
+    fetch("http://127.0.0.1:8000/api/visitors/"+item.id,{
       method:"DELETE",
       headers:{
         'Accept':'application/json',
@@ -144,20 +122,16 @@ const App=()=>{
         "id":item.id
       })
     }).then(res=>{
-      return res.json()
-    }).then(res=>{
-     getVisitorsList();
-     console.log(res);
+      getVisitorsList();
+      return res.json();
     }).catch(err=>{
-      console.log(err);
+
     })
   }
 
   return (
     <SafeAreaView>
       <Modal
-      /*JUST FOR TESTING*/
-      // visible={true}
       visible={modalVisitor}
       >
         <SafeAreaView>
@@ -170,7 +144,6 @@ const App=()=>{
           <View style={{paddingHorizontal:10,marginTop:20}}>
             <Text>Numéro</Text>
             <TextInput
-              // placeholder={"Numero"}
               style={styles.txtInput}
               value={numero}
               onChangeText={(text)=>{
